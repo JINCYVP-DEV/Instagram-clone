@@ -26,6 +26,8 @@ hiltNavigationCompose = "1.1.0"
 
 room = "2.6.1"
 datastore = "1.0.0"
+startupRuntime = "1.2.0"
+visionInternalVkp = "18.2.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +65,8 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 
 # DataStore Preferences
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startupRuntime" }
+vision-internal-vkp = { group = "com.google.mlkit", name = "vision-internal-vkp", version.ref = "visionInternalVkp" }
 
 
 
