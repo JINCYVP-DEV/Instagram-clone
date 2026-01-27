@@ -1,5 +1,6 @@
 package com.nj.instagram.data.db
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -8,6 +9,7 @@ import androidx.room.Update
 import com.nj.instagram.data.local.UserEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(userEntity: UserEntity)
@@ -16,7 +18,7 @@ interface UserDao {
     suspend fun getUserById(userId: String?): UserEntity?
 
     @Query("SELECT * FROM users WHERE username LIKE '%' || :query || '%'")
-    suspend fun searchUsers(query: String): Flow<List<UserEntity>>
+    fun searchUsers(query: String): Flow<List<UserEntity>>
 
     @Query("SELECT * FROM users ORDER BY username ASC")
     fun getAllUsers(): Flow<List<UserEntity>>

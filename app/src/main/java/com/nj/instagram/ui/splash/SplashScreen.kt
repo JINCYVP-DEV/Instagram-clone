@@ -1,6 +1,5 @@
-package com.nj.instagram.ui.auth
+package com.nj.instagram.ui.splash
 
-import android.window.SplashScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -11,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nj.instagram.ui.auth.AuthState
 
 sealed class SplashScreenNavigation()
 {

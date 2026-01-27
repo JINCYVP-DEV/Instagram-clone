@@ -18,5 +18,8 @@ class AuthViewModel @Inject constructor(
 //    val authEvents = _authEvents.asSharedFlow()
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+    fun login(email: String, password: String)
+    {
 
+    }
 }
