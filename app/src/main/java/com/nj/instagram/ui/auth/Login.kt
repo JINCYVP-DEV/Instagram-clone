@@ -26,15 +26,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,27 +47,56 @@ import com.nj.instagram.R
 import com.nj.instagram.ui.theme.ColorBackground
 import com.nj.instagram.ui.theme.ColorBorder
 import com.nj.instagram.ui.theme.ColorDivider
+import com.nj.instagram.ui.theme.ColorError
+import com.nj.instagram.ui.theme.ColorLink
 import com.nj.instagram.ui.theme.ColorOnBackground
 import com.nj.instagram.ui.theme.ColorPrimary
 import com.nj.instagram.ui.theme.ColorPrimaryDisabled
 import com.nj.instagram.ui.theme.ColorSurfaceVariant
+import com.nj.instagram.ui.theme.ColorTextSecondary
 import com.nj.instagram.ui.theme.Medium14
+import com.nj.instagram.ui.theme.Normal12
+import com.nj.instagram.ui.theme.SemiBold12
 import com.nj.instagram.ui.theme.SemiBold14
 import com.nj.instagram.ui.theme.White
 
 sealed class LoginNavigationEvent {
-    object onLoginSuccess : LoginNavigationEvent()
-    object onNavigateToSignUp : LoginNavigationEvent()
+    object OnLoginSuccess : LoginNavigationEvent()
+    object OnNavigateToSignUp : LoginNavigationEvent()
 }
 
 @Composable
-fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigationEvent)->Unit)
-{
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+fun Login(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigation: (LoginNavigationEvent) -> Unit
+) {
+    val emailState = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val passwordVisible = remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    Screen(
+        emailState = emailState,
+        password = password,
+        passwordVisible = passwordVisible,
+        uiState = uiState,
+        onLoginSuccess = {onNavigation(LoginNavigationEvent.OnLoginSuccess)},
+        onNavigateToSignUp = {onNavigation(LoginNavigationEvent.OnNavigateToSignUp)},
+        onLogin = {
+            viewModel.login(emailState.value, password.value)
+        }
+    )
+}
 
+@Composable
+fun Screen(
+    emailState: MutableState<String>,
+    password: MutableState<String>,
+    passwordVisible: MutableState<Boolean>,
+    uiState: AuthUiState,
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
+    onLogin: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,11 +121,11 @@ fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigati
 
         // Email TextField
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = emailState.value,
+            onValueChange = { emailState.value = it },
             label = {
                 Text(
-                    text = "Phone number, username or email",
+                    text = stringResource(R.string.text_ph_username_email),
                     style = MaterialTheme.typography.Medium14
                 )
             },
@@ -112,18 +145,18 @@ fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigati
 
         // Password TextField
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = password.value,
+            onValueChange = { password.value = it },
             label = { Text("Password", style = MaterialTheme.typography.Medium14) },
-           // visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(
-                    onClick = { passwordVisible = !passwordVisible },
+                    onClick = { passwordVisible.value = !passwordVisible.value },
                     modifier = Modifier.size(20.dp)
                 ) {
                     Icon(
-                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                        imageVector = if (passwordVisible.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = if (passwordVisible.value) stringResource(R.string.text_hide_password) else stringResource(R.string.text_show_password),
                         tint = ColorOnBackground,
                         modifier = Modifier.size(18.dp)
                     )
@@ -145,9 +178,9 @@ fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigati
 
         // Login Button
         Button(
-            onClick = { viewModel.login(email, password) },
+            onClick = { onLogin() },
             modifier = Modifier.fillMaxWidth(),
-            enabled = email.isNotEmpty() && password.isNotEmpty() && uiState !is AuthUiState.Loading,
+            enabled = emailState.value.isNotEmpty() && password.value.isNotEmpty() && uiState !is AuthUiState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ColorPrimary,
                 disabledContainerColor = ColorPrimaryDisabled
@@ -161,8 +194,7 @@ fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigati
                     strokeWidth = 2.dp
                 )
             } else {
-                Text(
-                    "Log in",
+                Text(text = stringResource(R.string.text_login),
                     style = MaterialTheme.typography.SemiBold14,
                     color = White
                 )
@@ -186,8 +218,83 @@ fun Login(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(LoginNavigati
             )
             Text(
                 "OR",
-                modifier = Modifier.padding(horizontal = 16.dp))
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.SemiBold12,
+                color = ColorTextSecondary
+            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(1.dp)
+                    .background(ColorDivider)
+            )
+        }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Forgot Password Button
+        TextButton(
+            onClick = { },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.text_forgot_password),
+                style = MaterialTheme.typography.Normal12,
+                color = ColorLink
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Divider
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(ColorDivider)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Sign Up Section
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.text_dont_have_account),
+                style = MaterialTheme.typography.Normal12,
+                color = ColorTextSecondary
+            )
+            TextButton(
+                onClick = { onNavigateToSignUp() },
+                modifier = Modifier.padding(0.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.text_sign_up),
+                    style = MaterialTheme.typography.SemiBold12,
+                    color = ColorLink
+                )
+            }
+        }
+
+        // Error Message
+        if (uiState is AuthUiState.Error) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                uiState.message,
+                color = ColorError,
+                style = MaterialTheme.typography.Normal12,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        // Success Navigation
+        if (uiState is AuthUiState.Success) {
+            LaunchedEffect(Unit) {
+                onLoginSuccess()
+            }
         }
     }
 }

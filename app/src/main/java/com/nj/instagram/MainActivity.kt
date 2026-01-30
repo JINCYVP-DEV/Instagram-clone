@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.nj.instagram.nav.MainNavigationGraph
+import com.nj.instagram.nav.InstaNavigationGraph
 import com.nj.instagram.ui.theme.InstagramTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             InstagramTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainNavigationGraph()
+                    InstaNavigationGraph()
                 }
             }
         }

@@ -25,10 +25,10 @@ fun NavGraphBuilder.authNavigationGraph(navHostController: NavHostController)
                 onNavigation ={event ->
                     when (event)
                     {
-                        LoginNavigationEvent.onLoginSuccess -> {
+                        LoginNavigationEvent.OnLoginSuccess -> {
                             navHostController.navigate(MainScreen.Home.route)
                         }
-                        LoginNavigationEvent.onNavigateToSignUp -> {
+                        LoginNavigationEvent.OnNavigateToSignUp -> {
                             navHostController.navigate(AuthScreen.SignUp.route)
                         }
                     }}
