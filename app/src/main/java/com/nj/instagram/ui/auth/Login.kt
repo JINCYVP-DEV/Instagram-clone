@@ -147,7 +147,7 @@ fun Screen(
         OutlinedTextField(
             value = password.value,
             onValueChange = { password.value = it },
-            label = { Text("Password", style = MaterialTheme.typography.Medium14) },
+            label = { Text(stringResource(R.string.text_password), style = MaterialTheme.typography.Medium14) },
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(
@@ -217,7 +217,7 @@ fun Screen(
                     .background(ColorDivider)
             )
             Text(
-                "OR",
+                stringResource(R.string.text_or),
                 modifier = Modifier.padding(horizontal = 16.dp),
                 style = MaterialTheme.typography.SemiBold12,
                 color = ColorTextSecondary

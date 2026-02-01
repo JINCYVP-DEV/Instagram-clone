@@ -43,11 +43,11 @@ fun NavGraphBuilder.authNavigationGraph(navHostController: NavHostController)
                             navHostController.popBackStack()
                         }
 
-                        SignUpNavigationEvent.onNavigateToLogin -> {
+                        SignUpNavigationEvent.OnNavigateToLogin -> {
                             navHostController.popBackStack()
                         }
 
-                        SignUpNavigationEvent.onSignUpSuccess -> {
+                        SignUpNavigationEvent.OnSignUpSuccess -> {
                             navHostController.navigate(MainScreen.Home.route) {
                                 popUpTo(AuthScreen.Login.route) { inclusive = true }
                             }

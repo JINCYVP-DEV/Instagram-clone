@@ -14,9 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -32,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,9 +62,10 @@ import com.nj.instagram.ui.theme.White
 
 sealed class SignUpNavigationEvent {
     object LoggedOut : SignUpNavigationEvent()
-    object onNavigateToLogin : SignUpNavigationEvent()
 
-    object onSignUpSuccess : SignUpNavigationEvent()
+    object OnNavigateToLogin : SignUpNavigationEvent()
+
+    object OnSignUpSuccess : SignUpNavigationEvent()
 }
 @Composable
 fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNavigationEvent)->Unit)
@@ -111,7 +119,7 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email", style = MaterialTheme.typography.Medium14) },
+            label = { Text(stringResource(R.string.text_email), style = MaterialTheme.typography.Medium14) },
             isError = showEmailError,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
@@ -122,6 +130,36 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
                 focusedBorderColor = if (showEmailError) ColorError else ColorBorder,
                 unfocusedContainerColor = ColorSurfaceVariant,
                 focusedContainerColor = White
+            )
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(stringResource(R.string.text_password), style = MaterialTheme.typography.Medium14) },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(
+                    onClick = { passwordVisible = !passwordVisible },
+                    modifier = Modifier.size(20.dp)
+                ) {
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = if (passwordVisible) stringResource(R.string.text_hide_password) else stringResource(R.string.text_show_password),
+                        tint = ColorOnBackground,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.Medium14,
+            shape = RoundedCornerShape(4.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = ColorBorder,
+                focusedBorderColor = ColorBorder,
+                unfocusedContainerColor = ColorSurfaceVariant,
+                focusedContainerColor = ColorBackground
             )
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -136,7 +174,7 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
                 } else {
                     showEmailError = false
                 }
-               // viewModel.signUp(email, password, username)
+                viewModel.signUp(email, password, username)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && uiState !is AuthUiState.Loading,
@@ -177,11 +215,11 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Already have an account? ",
+                stringResource(R.string.text_already_have_account),
                 style = MaterialTheme.typography.Normal12,
                 color = ColorTextSecondary
             )
-            TextButton(onClick = { onNavigation(SignUpNavigationEvent.onNavigateToLogin) }) {
+            TextButton(onClick = { onNavigation(SignUpNavigationEvent.OnNavigateToLogin) }) {
                 Text(
                     stringResource(R.string.text_login),
                     style = MaterialTheme.typography.SemiBold12,
@@ -202,7 +240,7 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
 
         // Success Navigation
         if (uiState is AuthUiState.Success) {
-            LaunchedEffect(Unit) { onNavigation(SignUpNavigationEvent.onSignUpSuccess) }
+            LaunchedEffect(Unit) { onNavigation(SignUpNavigationEvent.OnSignUpSuccess) }
         }
 
     }

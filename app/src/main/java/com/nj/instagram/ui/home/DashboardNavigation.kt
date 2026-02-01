@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.nj.instagram.nav.postNestedGraph
 
 sealed class MainScreen(val route: String)
 {
@@ -17,8 +18,10 @@ fun NavGraphBuilder.dashboardScreenGraph(navHostController: NavHostController)
     {
         composable(MainScreen.Home.route)
         {
-            HomeNavigation(navHostController)
+            HomeNavigation()
         }
+        postNestedGraph(navHostController)
+
         //if we need screens without bottombar ie settings
 //        composable("settings")
 //        {

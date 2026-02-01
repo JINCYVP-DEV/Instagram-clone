@@ -40,7 +40,7 @@ sealed class BottomNavItem(val route: String,val icon: ImageVector,val label: St
 }
 
 @Composable
-fun HomeNavigation(rootNavController: NavHostController)
+fun HomeNavigation()
 {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -109,7 +109,6 @@ val items =listOf(BottomNavItem.Home,
                 {
                     ProfileScreen()
                 }
-                postNestedGraph(rootNavController)
             }
         }
 
