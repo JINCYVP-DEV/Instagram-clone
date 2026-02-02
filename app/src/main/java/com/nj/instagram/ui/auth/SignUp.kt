@@ -75,7 +75,7 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var showEmailError by remember { mutableStateOf(false) }
-    val uiState= viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by  viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
