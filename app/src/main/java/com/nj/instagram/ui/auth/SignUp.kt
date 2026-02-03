@@ -184,6 +184,7 @@ fun SignUp(viewModel: AuthViewModel = hiltViewModel(),onNavigation:(SignUpNaviga
             ),
             shape = RoundedCornerShape(4.dp)
         ) {
+
             if (uiState is AuthUiState.Loading) {
                 CircularProgressIndicator(
                     color = White,
