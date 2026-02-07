@@ -5,7 +5,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.nj.instagram.nav.postNestedGraph
+import com.nj.instagram.ui.auth.AuthScreen
 import com.nj.instagram.ui.auth.SettingsScreen
+import com.nj.instagram.ui.auth.SettingsScreenNavigationEvents
 
 sealed class MainScreen(val route: String)
 {
@@ -27,6 +29,18 @@ fun NavGraphBuilder.dashboardScreenGraph(navHostController: NavHostController)
         composable("settings")
         {
             SettingsScreen()
+            {
+                when(it)
+                {
+                    SettingsScreenNavigationEvents.NavigateToLogin ->
+                    {
+                        navHostController.navigate(AuthScreen.Login.route)
+                    }
+                    SettingsScreenNavigationEvents.OnBack -> {
+                        navHostController.popBackStack()
+                    }
+                }
+            }
         }
     }
 }
