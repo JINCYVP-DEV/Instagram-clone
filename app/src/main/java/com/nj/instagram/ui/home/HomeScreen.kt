@@ -25,43 +25,5 @@ import com.nj.instagram.ui.theme.Bold24
 @Composable
 fun HomeScreen()
 {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-            ) {
-                Text(stringResource(R.string.app_name), style = MaterialTheme.typography.Bold24)
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    imageVector = Icons.Default.HeartBroken,
-                    contentDescription = "like",
-                    modifier = Modifier.size(28.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Message,
-                    contentDescription = "message",
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-        }
-        items(posts) { post ->
-            PostCard(
-                post = post,
-                currentUserId = currentUserId ?: "",
-                onLikeClick = {
-                    if (post.isLiked) {
-                        viewModel.unlikePost(post.id, currentUserId ?: "")
-                    } else {
-                        viewModel.likePost(post.id, currentUserId ?: "")
-                    }
-                },
-                onProfileClick = { onProfileClick(post.userId) },
-                onCommentClick = { onPostClick(post.id) }
-            )
-            Spacer(Modifier.height(12.dp))
-        }
-    }
+
 }
